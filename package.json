@@ -10,13 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "lodash": "^4.17.20",
     "node-html-parser": "^1.2.21",
-    "nodemon": "^2.0.4",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
   },
   "devDependencies": {
+    "nodemon": "^2.0.4",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^6.12.0",
