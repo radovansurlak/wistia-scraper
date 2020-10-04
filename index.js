@@ -16,7 +16,7 @@ class Links {
 
   getVideoIds() {
     const links = fs.readFileSync(this.filePath, 'utf8');
-    const linkLines = links.split('\n');
+    const linkLines = links.split('\n').filter(({ length }) => length !== 0);
 
     const videoIds = linkLines.map((link) => ({
       id: getIdFromLink(link),
@@ -61,7 +61,7 @@ class WistiaVideo {
   }
 
   async download() {
-    const { downloadURL, id } = this;
+    const { downloadURL, id, title } = this;
     if (!downloadURL) await this.getVideoUrl();
 
     const downloadDirectory = 'downloads';
@@ -71,7 +71,7 @@ class WistiaVideo {
     }
 
     const file = fs.createWriteStream(
-      path.join(__dirname, downloadDirectory, `${id}.mp4`),
+      path.join(__dirname, downloadDirectory, `${title}.mp4`),
     );
 
     const downloadRequest = request({
@@ -91,9 +91,9 @@ class WistiaVideo {
     downloadRequest.on('data', (chunk) => {
       currentProgress += chunk.length;
       process.stdout.write(
-        `Downloading video ${id}: ${(
-          100 *
-          (currentProgress / totalLength)
+        `Downloading video "${title}": ${(
+          100
+          * (currentProgress / totalLength)
         ).toFixed(2)}%\r`,
       );
     });
