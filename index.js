@@ -55,19 +55,36 @@ class WistiaVideo {
 
     const videos = JSON.parse(videoString);
 
-    const { url } = videos.find((video) => video.display_name === '540p');
+    let url;
+
+    try {
+      url = videos.find(
+        (video) => video.display_name === '540p'
+          || video.display_name === '720p'
+          || video.display_name === '360p',
+      ).url;
+    } catch (error) {
+      console.log(videos);
+    }
 
     this.downloadURL = url;
   }
 
   async download() {
-    const { downloadURL, id, title } = this;
+    const { downloadURL, title } = this;
     if (!downloadURL) await this.getVideoUrl();
 
     const downloadDirectory = 'downloads';
 
     if (!fs.existsSync(path.join(__dirname, downloadDirectory))) {
       fs.mkdirSync(path.join(__dirname, downloadDirectory));
+    }
+
+    if (
+      fs.existsSync(path.join(__dirname, downloadDirectory, `${title}.mp4`))
+    ) {
+      console.log(`${title}.mp4 already exist, skipping`);
+      return;
     }
 
     const file = fs.createWriteStream(
@@ -92,8 +109,8 @@ class WistiaVideo {
       currentProgress += chunk.length;
       process.stdout.write(
         `Downloading video "${title}": ${(
-          100 *
-          (currentProgress / totalLength)
+          100
+          * (currentProgress / totalLength)
         ).toFixed(2)}%\r`,
       );
     });
