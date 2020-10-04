@@ -92,14 +92,16 @@ class WistiaVideo {
       currentProgress += chunk.length;
       process.stdout.write(
         `Downloading video "${title}": ${(
-          100
-          * (currentProgress / totalLength)
+          100 *
+          (currentProgress / totalLength)
         ).toFixed(2)}%\r`,
       );
     });
 
     downloadRequest.on('end', () => {
       process.stdout.write('Download finished \r');
+      process.stdout.clearLine(); // clear current text
+      process.stdout.cursorTo(0);
     });
 
     return new Promise((resolve, reject) => {
